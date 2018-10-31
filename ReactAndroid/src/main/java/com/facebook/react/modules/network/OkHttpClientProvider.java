@@ -66,6 +66,8 @@ public class OkHttpClientProvider {
       .writeTimeout(0, TimeUnit.MILLISECONDS)
       .cookieJar(new ReactCookieJarContainer());
 
+    FLog.i("OkHttpClientProvider", "OkHttpClient.Builder.retryOnConnectionFailure(false)");
+
     return enableTls12OnPreLollipop(client);
   }
 
