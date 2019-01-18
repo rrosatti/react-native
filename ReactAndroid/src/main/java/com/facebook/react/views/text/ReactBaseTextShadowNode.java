@@ -185,9 +185,23 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
     }
   }
 
+  protected int getScaledFontSize(float fontSize) {
+    float originalSize = PixelUtil.toPixelFromDIP(fontSize);
+    if (!mAllowFontScaling) {
+      return (int) Math.ceil(originalSize);
+    }
+
+    float scaledSize = PixelUtil.toPixelFromSP(fontSize);
+    float multiplier = scaledSize/originalSize;
+    if (mMaxFontSizeMultiplier != UNSET && multiplier > mMaxFontSizeMultiplier) {
+      return (int) Math.ceil(originalSize * mMaxFontSizeMultiplier);
+    }
+
+    return (int) Math.ceil(scaledSize);
+  }
+
   protected int getDefaultFontSize() {
-    return mAllowFontScaling ? (int) Math.ceil(PixelUtil.toPixelFromSP(ViewDefaults.FONT_SIZE_SP))
-      : (int) Math.ceil(PixelUtil.toPixelFromDIP(ViewDefaults.FONT_SIZE_SP));
+    return getScaledFontSize(ViewDefaults.FONT_SIZE_SP);
   }
 
   protected static Spannable spannedFromShadowNode(
@@ -258,6 +272,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
   protected float mLetterSpacing = Float.NaN;
   protected boolean mIsColorSet = false;
   protected boolean mAllowFontScaling = true;
+  protected float mMaxFontSizeMultiplier = UNSET;
   protected int mColor;
   protected boolean mIsBackgroundColorSet = false;
   protected int mBackgroundColor;
@@ -317,6 +332,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
     mLineHeight = node.mLineHeight;
     mIsColorSet = node.mIsColorSet;
     mAllowFontScaling = node.mAllowFontScaling;
+    mMaxFontSizeMultiplier = node.mMaxFontSizeMultiplier;
     mColor = node.mColor;
     mIsBackgroundColorSet = node.mIsBackgroundColorSet;
     mBackgroundColor = node.mBackgroundColor;
@@ -379,10 +395,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
     if (lineHeight == UNSET) {
       mLineHeight = Float.NaN;
     } else {
-      mLineHeight =
-          mAllowFontScaling
-              ? PixelUtil.toPixelFromSP(lineHeight)
-              : PixelUtil.toPixelFromDIP(lineHeight);
+      mLineHeight = getScaledFontSize(lineHeight);
     }
     markUpdated();
   }
@@ -390,9 +403,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
   @ReactProp(name = ViewProps.LETTER_SPACING, defaultFloat = Float.NaN)
   public void setLetterSpacing(float letterSpacing) {
     mLetterSpacingInput = letterSpacing;
-    mLetterSpacing = mAllowFontScaling
-      ? PixelUtil.toPixelFromSP(mLetterSpacingInput)
-      : PixelUtil.toPixelFromDIP(mLetterSpacingInput);
+    mLetterSpacing = getScaledFontSize(mLetterSpacingInput);
     markUpdated();
   }
 
@@ -430,10 +441,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
   public void setFontSize(float fontSize) {
     mFontSizeInput = fontSize;
     if (fontSize != UNSET) {
-      fontSize =
-          mAllowFontScaling
-              ? (float) Math.ceil(PixelUtil.toPixelFromSP(fontSize))
-              : (float) Math.ceil(PixelUtil.toPixelFromDIP(fontSize));
+      fontSize = getScaledFontSize(fontSize);
     }
     mFontSize = (int) fontSize;
     markUpdated();
@@ -596,6 +604,18 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
     } else {
       throw new JSApplicationIllegalArgumentException("Invalid textTransform: " + textTransform);
     }
+    markUpdated();
+  }
+
+  @ReactProp(name = ViewProps.MAX_FONT_SIZE_MULTIPLIER, defaultFloat = UNSET)
+  public void setMaxFontSizeMultiplier(float maxFontSizeMultiplier) {
+    if (maxFontSizeMultiplier == UNSET || maxFontSizeMultiplier < 1.0) {
+      return;
+    }
+    mMaxFontSizeMultiplier = maxFontSizeMultiplier;
+    setFontSize(mFontSizeInput);
+    setLineHeight(mLineHeightInput);
+    setLetterSpacing(mLetterSpacingInput);
     markUpdated();
   }
 }
