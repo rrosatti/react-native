@@ -288,12 +288,14 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This comment
      * suppresses an error when upgrading Flow's support for React. To see the
      * error delete this comment and run Flow. */
-    this._scrollRef.scrollTo(
-      /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This
-       * comment suppresses an error when upgrading Flow's support for React.
-       * To see the error delete this comment and run Flow. */
-      this.props.horizontal ? {x: offset, animated} : {y: offset, animated},
-    );
+    if (this._scrollRef && this._scrollRef.scrollTo && typeof this._scrollRef.scrollTo === 'function') {
+      this._scrollRef.scrollTo(
+        /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This
+         * comment suppresses an error when upgrading Flow's support for React.
+         * To see the error delete this comment and run Flow. */
+        this.props.horizontal ? {x: offset, animated} : {y: offset, animated},
+      );
+    }
   }
 
   // scrollToIndex may be janky without getItemLayout prop
@@ -339,12 +341,14 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This comment
      * suppresses an error when upgrading Flow's support for React. To see the
      * error delete this comment and run Flow. */
-    this._scrollRef.scrollTo(
-      /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This
-       * comment suppresses an error when upgrading Flow's support for React.
-       * To see the error delete this comment and run Flow. */
-      horizontal ? {x: offset, animated} : {y: offset, animated},
-    );
+    if (this._scrollRef && this._scrollRef.scrollTo && typeof this._scrollRef.scrollTo === 'function') {
+      this._scrollRef.scrollTo(
+        /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This
+        * comment suppresses an error when upgrading Flow's support for React.
+        * To see the error delete this comment and run Flow. */
+        horizontal ? {x: offset, animated} : {y: offset, animated},
+      );
+    }
   }
 
   // scrollToItem may be janky without getItemLayout prop. Required linear scan through items -
@@ -380,12 +384,14 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This comment
      * suppresses an error when upgrading Flow's support for React. To see the
      * error delete this comment and run Flow. */
-    this._scrollRef.scrollTo(
-      /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This
-       * comment suppresses an error when upgrading Flow's support for React.
-       * To see the error delete this comment and run Flow. */
-      this.props.horizontal ? {x: offset, animated} : {y: offset, animated},
-    );
+    if (this._scrollRef && this._scrollRef.scrollTo && typeof this._scrollRef.scrollTo === 'function') {
+      this._scrollRef.scrollTo(
+        /* $FlowFixMe(>=0.53.0 site=react_native_fb,react_native_oss) This
+         * comment suppresses an error when upgrading Flow's support for React.
+         * To see the error delete this comment and run Flow. */
+        this.props.horizontal ? {x: offset, animated} : {y: offset, animated},
+      );
+    }
   }
 
   recordInteraction() {
